@@ -19,15 +19,20 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         #print(f"GET request received. URI: {self.path}, Headers: {self.headers}")
         response = handle_request(self, root_directory)
-        if response == '404 Not Found':
-            self.send_response(404)
+        if isinstance(response, str):
+            self.send_response(200)
             self.end_headers()
-            self.wfile.write(b'404 Not Found')
-            return
-
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(response.encode())
+            self.wfile.write(response.encode())
+        elif callable(response):
+            # Si 'response' est une fonction, appelez-la pour obtenir la chaîne de caractères
+            response_content = response()
+            if isinstance(response_content, str):
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(response_content.encode())
+        else:
+            # Gérez les autres types de réponses ou erreurs ici
+            pass
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
