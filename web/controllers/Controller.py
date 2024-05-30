@@ -9,6 +9,6 @@ class Controller:
         return wrapper
     
     def displayIndex(self):
-        print('Hey')
+        print("Affichage de la page index")
         with open("index.html", 'r') as f:
             return f.read()

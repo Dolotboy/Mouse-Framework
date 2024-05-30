@@ -2,6 +2,7 @@ import os
 from web.controllers.Controller import Controller
 
 def display_view(name):
+    print("Affichage de la page " + name)
     with open(name, 'r') as f:
         return f.read()
 
