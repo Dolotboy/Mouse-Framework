@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 from route import handle_request
 import os
 
+load_dotenv()
+root_directory = os.getenv('ROOT_DIRECTORY')
+PORT = int(os.getenv('PORT'))
+
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
@@ -53,10 +57,6 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     try:
         if is_admin():
-
-            load_dotenv()
-            root_directory = os.getenv('ROOT_DIRECTORY')
-            PORT = int(os.getenv('PORT'))
 
             # Change working directory to 'web'
             os.chdir(root_directory)
