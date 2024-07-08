@@ -3,7 +3,7 @@ from web.controllers.Controller import Controller
 
 def display_view(name):
     print("Affichage de la page " + name)
-    with open('templates/'. name, 'r') as f:
+    with open('templates/' + name, 'r') as f:
         return f.read()
 
 def get_routes(root_directory):
@@ -18,7 +18,7 @@ def handle_request(request, root_directory):
     path = request.path
     routes = get_routes(root_directory)
     if path in routes:
-        response = routes[path]
+        response = routes[path]()
         return response
     else:
         return '404 Not Found'

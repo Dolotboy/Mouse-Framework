@@ -3,8 +3,14 @@ import socketserver
 import threading
 import ctypes, sys
 from dotenv import load_dotenv
-from web.routes.route import handle_request
 import os
+
+# Add the root directory to PYTHONPATH
+load_dotenv()
+root_directory = os.getenv('ROOT_DIRECTORY')
+sys.path.append(root_directory)
+
+from web.routes.route import handle_request
 
 def is_admin():
     try:
@@ -17,8 +23,9 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        #print(f"GET request received. URI: {self.path}, Headers: {self.headers}")
+        print(f"GET request received. URI: {self.path}, Headers: {self.headers}")
         response = handle_request(self, root_directory)
+        print(f"Response from handle_request: {response}")
         if response == '404 Not Found':
             self.send_response(404)
             self.end_headers()
@@ -32,9 +39,10 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
-        print(f"POST request received. URI: {self.path}, Headers: {self.headers}, Forms Data: {post_data.decode()}")
+        print(f"POST request received. URI: {self.path}, Headers: {self.headers}, Form Data: {post_data.decode()}")
 
         response = handle_request(self, root_directory)
+        print(f"Response from handle_request: {response}")
         if response == '404 Not Found':
             self.send_response(404)
             self.end_headers()
@@ -48,12 +56,9 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     try:
         if is_admin():
-
-            load_dotenv()
-            root_directory = os.getenv('ROOT_DIRECTORY')
             PORT = int(os.getenv('PORT'))
 
-            # Change working directory to 'web'
+            # Change working directory to the root directory
             os.chdir(root_directory)
 
             Handler = MyHttpRequestHandler
@@ -66,6 +71,6 @@ if __name__ == "__main__":
             # Re-run the program with admin rights
             ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
     except Exception as e:
-        print(f"Error : {e}")
+        print(f"Error: {e}")
     finally:
         input("Press enter to continue...")
