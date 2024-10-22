@@ -22,3 +22,8 @@ def handle_request(request, root_directory):
         return response
     else:
         return '404 Not Found'
+
+def images(filename):
+    # Construct the path to the images directory
+    images_dir = os.path.join(os.getenv('ROOT_DIRECTORY'), 'resources', 'images')
+    return os.path.join('/images', filename)  # Return the URL path to the image

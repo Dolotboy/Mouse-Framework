@@ -11,6 +11,7 @@ root_directory = os.getenv('ROOT_DIRECTORY')
 sys.path.append(root_directory)
 
 from web.routes.route import handle_request
+from vendor.htmlScanner import HtmlScanner
 
 def is_admin():
     try:
@@ -25,16 +26,19 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         print(f"GET request received. URI: {self.path}, Headers: {self.headers}")
         response = handle_request(self, root_directory)
-        print(f"Response from handle_request: {response}")
         if response == '404 Not Found':
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b'404 Not Found')
             return
 
+        # Scan and replace custom syntax in response HTML content
+        scanner = HtmlScanner(root_directory)
+        replaced_response = scanner.scan_and_replace(response)
+
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(response.encode())
+        self.wfile.write(replaced_response.encode())
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
@@ -42,16 +46,19 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         print(f"POST request received. URI: {self.path}, Headers: {self.headers}, Form Data: {post_data.decode()}")
 
         response = handle_request(self, root_directory)
-        print(f"Response from handle_request: {response}")
         if response == '404 Not Found':
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b'404 Not Found')
             return
 
+        # Scan and replace custom syntax in response HTML content
+        scanner = HtmlScanner(root_directory)
+        replaced_response = scanner.scan_and_replace(response)
+
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(response.encode())
+        self.wfile.write(replaced_response.encode())
 
 if __name__ == "__main__":
     try:
