@@ -1,6 +1,6 @@
-<div style="text-align:center;">
-    <img src="mouse_logo_circle.png" style="width:256px;height:256px;">
-</div>
+<p align="center">
+  <img src="mouse_logo_circle.png" alt="Mouse Logo" width="256" height="256">
+</p>
 
 # Mouse
 
