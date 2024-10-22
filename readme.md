@@ -1,6 +1,10 @@
+<div style="text-align:center;">
+    <img src="mouse_logo_circle.png" style="width:256px;height:256px;">
+</div>
+
 # Mouse
 
-A web framework inspired by Laravel but in Python.
+A Python MVC Web Framework inspired by Laravel
 
 ## Installation
 
@@ -8,5 +12,22 @@ A web framework inspired by Laravel but in Python.
 pip install Mouse
 ```
 
-Dependencies and Libraries:
-- pip install python-dotenv
+## Cloning Procedure
+
+- ```bash
+    git clone https://github.com/Dolotboy/Mouse
+    ```
+- ```bash
+    cd mouse
+    ```
+- Copy ".env.example"
+- Paste
+- Rename the copy for ".env"
+
+## Dependencies
+
+- [Python](https://www.python.org/downloads/)
+- [Python DotEnv](https://pypi.org/project/python-dotenv/)
+    - ```bash 
+        pip install python-dotenv
+        ```
