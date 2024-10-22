@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .  # Construire l'image à partir du Dockerfile dans le répertoire courant
+    container_name: python_mouse_web_app
+    volumes:
+      - ./:/usr/src/app  # Monte le dossier du projet dans le conteneur
+    working_dir: /usr/src/app
+    command: python server.py
+    environment:
+      - PORT=${PORT}  # Injecter la variable PORT depuis le fichier .env
+    ports:
+      - "${PORT}:${PORT}"  # Mapper le port défini dans le fichier .env entre l'hôte et le conteneur

@@ -4,6 +4,7 @@ import threading
 import ctypes, sys
 from dotenv import load_dotenv
 import os
+import platform
 
 # Add the root directory to PYTHONPATH
 load_dotenv()
@@ -14,10 +15,48 @@ from web.routes.route import handle_request
 from vendor.htmlScanner import HtmlScanner
 
 def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
+    if platform.system() == 'Windows':
+        try:
+            return ctypes.windll.shell32.IsUserAnAdmin()
+        except:
+            return False
+    else:
         return False
+    
+def is_running_in_docker():
+    #Vérifie si le script s'exécute dans un environnement Docker.
+    path = '/proc/1/cgroup'
+    return os.path.exists('/.dockerenv') or (os.path.isfile(path) and any('docker' in line for line in open(path)))
+    
+def grant_admin_access():
+    """Vérifie et accorde les privilèges administrateur si nécessaire."""
+    # Si on est dans Docker, on ignore la vérification des privilèges
+    if is_running_in_docker():
+        print("Running in Docker, skipping admin privilege check.")
+        return
+
+    system = platform.system()
+
+    # Sous Windows, vérifier et tenter d'élever les privilèges si nécessaire
+    if system == 'Windows':
+        if not is_admin():
+            print("User is not admin, relaunching with admin privileges...")
+            try:
+                # Relancer le script avec des privilèges admin
+                ctypes.windll.shell32.ShellExecuteW(
+                    None, "runas", sys.executable, " ".join(sys.argv), None, 1
+                )
+                sys.exit(0)  # Quitter le script original après la relance
+            except Exception as e:
+                print(f"Failed to elevate privileges: {e}")
+                sys.exit(1)  # Quitter si l'élévation échoue
+
+    # Sous Linux, vérifier si l'utilisateur est root (UID == 0)
+    elif system in ['Linux', 'Darwin']:  # Darwin = macOS
+        if not is_admin():
+            print("This operation requires root privileges. Please run as root or with sudo.")
+            sys.exit(1)
+
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
@@ -62,21 +101,20 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     try:
-        if is_admin():
-            PORT = int(os.getenv('PORT'))
+        # Vérifier et accorder les privilèges administrateur si nécessaire
+        grant_admin_access()
 
-            # Change working directory to the root directory
-            os.chdir(root_directory)
+        PORT = int(os.getenv('PORT', 8080))  # Port par défaut 8080 si non défini
 
-            Handler = MyHttpRequestHandler
+        # Changer le répertoire de travail pour le répertoire racine
+        os.chdir(root_directory)
 
-            with ThreadedTCPServer(("", PORT), Handler) as httpd:
-                print("Serving at port", PORT)
-                httpd.serve_forever()
-        else:
-            print("User is not admin, relaunch in admin mode")
-            # Re-run the program with admin rights
-            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+        Handler = MyHttpRequestHandler
+
+        with ThreadedTCPServer(("", PORT), Handler) as httpd:
+            print("Serving at port", PORT)
+            httpd.serve_forever()
+
     except Exception as e:
         print(f"Error: {e}")
     finally:
