@@ -34,7 +34,7 @@ pip install Mouse
 
 ## Dependencies
 
-- [Python](https://www.python.org/downloads/)
+- [Python 3.12](https://www.python.org/downloads/)
 - [Python DotEnv](https://pypi.org/project/python-dotenv/)
     - ```bash 
         pip install python-dotenv
