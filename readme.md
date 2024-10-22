@@ -6,6 +6,14 @@
 
 A Python MVC Web Framework inspired by Laravel
 
+## Tested Environnment
+
+- Docker
+    - Linux Mint 22
+    - Windows 10
+- On host
+    - Windows 10
+
 ## Installation
 
 ```bash
