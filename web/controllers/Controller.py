@@ -1,4 +1,4 @@
-from framework.nest.utils import display_view
+from framework.nest.utils import display_template
 
 class Controller:
     def __init__(self):
@@ -12,4 +12,4 @@ class Controller:
     
     def displayIndex(self, root_directory):
         print('Displaying Index Page')
-        return display_view("index.html", root_directory)
+        return display_template("index.html", root_directory)
