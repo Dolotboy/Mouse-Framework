@@ -6,13 +6,14 @@ from dotenv import load_dotenv
 import os
 import platform
 
+from framework.nest.routing.router import Router
+from web.routes.route import define_routes
+from framework.nest.htmlScanner import HtmlScanner
+
 # Add the root directory to PYTHONPATH
 load_dotenv()
 root_directory = os.getenv('ROOT_DIRECTORY')
 sys.path.append(root_directory)
-
-from web.routes.route import handle_request
-from vendor.htmlScanner import HtmlScanner
 
 def is_admin():
     if platform.system() == 'Windows':
@@ -64,14 +65,20 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         print(f"GET request received. URI: {self.path}, Headers: {self.headers}")
-        response = handle_request(self, root_directory)
+
+        # Initialise le routeur
+        router = Router()
+        define_routes(router, root_directory)  # Définit les routes spécifiques à l'application
+
+        # Appelle la fonction handle_request qui utilise le Router
+        response = router.handle_request(self.path)
         if response == '404 Not Found':
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b'404 Not Found')
             return
 
-        # Scan and replace custom syntax in response HTML content
+        # Scanner pour remplacer la syntaxe personnalisée dans le contenu HTML
         scanner = HtmlScanner(root_directory)
         replaced_response = scanner.scan_and_replace(response)
 
@@ -84,14 +91,19 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         post_data = self.rfile.read(content_length)
         print(f"POST request received. URI: {self.path}, Headers: {self.headers}, Form Data: {post_data.decode()}")
 
-        response = handle_request(self, root_directory)
+        # Initialise le routeur
+        router = Router()
+        define_routes(router, root_directory)
+
+        # Appelle la fonction handle_request qui utilise le Router
+        response = router.handle_request(self.path)
         if response == '404 Not Found':
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b'404 Not Found')
             return
 
-        # Scan and replace custom syntax in response HTML content
+        # Scanner pour remplacer la syntaxe personnalisée dans le contenu HTML
         scanner = HtmlScanner(root_directory)
         replaced_response = scanner.scan_and_replace(response)
 

@@ -1,29 +1,9 @@
-import os
+from framework.nest.routing.router import Router
+from framework.nest.utils import display_view
 from web.controllers.Controller import Controller
 
-def display_view(name):
-    print("Affichage de la page " + name)
-    with open('templates/' + name, 'r') as f:
-        return f.read()
-
-def get_routes(root_directory):
-    return {
-        '/': lambda: display_view("index.html"),
-        '/about': lambda: display_view("about.html"),
-        '/contact': lambda: display_view("contact.html"),
-        '/index': lambda: Controller().displayIndex(),
-    }
-
-def handle_request(request, root_directory):
-    path = request.path
-    routes = get_routes(root_directory)
-    if path in routes:
-        response = routes[path]()
-        return response
-    else:
-        return '404 Not Found'
-
-def images(filename):
-    # Construct the path to the images directory
-    images_dir = os.path.join(os.getenv('ROOT_DIRECTORY'), 'resources', 'images')
-    return os.path.join('/images', filename)  # Return the URL path to the image
+def define_routes(router, root_directory):
+    router.add_route('/', lambda: display_view("index.html", root_directory))
+    router.add_route('/about', lambda: display_view("about.html", root_directory))
+    router.add_route('/contact', lambda: display_view("contact.html", root_directory))
+    router.add_route('/index', lambda: Controller().displayIndex(root_directory))

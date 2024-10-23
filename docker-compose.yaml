@@ -7,6 +7,7 @@ services:
     container_name: python_mouse_web_app
     volumes:
       - ./:/usr/src/app  # Monte le dossier du projet dans le conteneur
+      - ./web:/usr/src/app/web
     working_dir: /usr/src/app
     command: python server.py
     environment:
