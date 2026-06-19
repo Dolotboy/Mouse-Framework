@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="mouse_logo_circle.png" alt="Mouse Logo" width="256" height="256">
+  <img src="framework/nest/assets/images/mouse_logo_circle.png" alt="Mouse Logo" width="256" height="256">
 </p>
 
 # Mouse
