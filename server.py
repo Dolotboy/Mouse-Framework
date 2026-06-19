@@ -22,7 +22,7 @@ def is_admin():
         except:
             return False
     else:
-        return False
+        return os.geteuid() == 0
     
 def is_running_in_docker():
     #Vérifie si le script s'exécute dans un environnement Docker.
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         PORT = int(os.getenv('PORT', 8080))  # Port par défaut 8080 si non défini
 
         # Changer le répertoire de travail pour le répertoire racine
-        os.chdir(root_directory)
+        #os.chdir(root_directory)
 
         Handler = MyHttpRequestHandler
 

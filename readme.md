@@ -9,16 +9,30 @@ A Python MVC Web Framework inspired by Laravel
 ## Tested Environnment
 
 - Docker
-    - Linux Mint 22
     - Windows 10
+    - Linux Mint 22
+    - Zorin OS 18
+    - Ubuntu 24.04 LTS
 - On host
     - Windows 10
+    - Linux Mint 22
+    - Zorin OS 18
+    - Ubuntu 24.04 LTS
 
 ## Installation
 
 ```bash
-pip install Mouse
+pip install mouse-cli
+mouse-cli new project MyProject
 ```
+- Copy ".env.example"
+- Paste
+- Rename the copy for ".env"
+- python server.py
+- If port 8080 is already in use:
+    ```bash
+    sudo fuser -k 8080/tcp
+    ```
 
 ## Cloning Procedure
 
@@ -31,6 +45,7 @@ pip install Mouse
 - Copy ".env.example"
 - Paste
 - Rename the copy for ".env"
+
 
 ## Dependencies
 
