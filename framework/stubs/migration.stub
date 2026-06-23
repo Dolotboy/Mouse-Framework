@@ -1,0 +1,7 @@
+class Migration:
+    def up(self, db):
+        pass
+
+    def down(self, db):
+        pass
+

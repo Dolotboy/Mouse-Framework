@@ -54,3 +54,25 @@ mouse-cli new project MyProject
     - ```bash 
         pip install python-dotenv
         ```
+- [MySQL Connector/Python](https://pypi.org/project/mysql-connector-python/) for MySQL connections
+
+## Framework structure
+[Documentation](/framework/readme.md)
+
+## Database and migrations
+
+Configure the database in `.env` with `DB_CONNECTION=mysql` or `DB_CONNECTION=sqlite`.
+```bash
+mouse-cli new db
+mouse-cli new migration create_users_table
+mouse-cli migrate
+mouse-cli migrate:rollback
+```
+
+Migration files are created in `web/database/migrations`.
+
+## Views
+
+## Models
+
+## Controllers
