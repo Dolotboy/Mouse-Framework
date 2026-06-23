@@ -1,7 +1,15 @@
 class Migration:
     def up(self, db):
-        pass
+        # Exemple d'utilisation de la nouvelle API Schema
+        # Vous pouvez utiliser l'helper attaché au `db` par le Migrator:
+        def table(t):
+            t.increments('id')
+            t.string('name')
+            t.string('email').unique()
+            t.timestamps()
+
+        db.table('users', table)
 
     def down(self, db):
-        pass
+        db.schema.drop_table('users')
 
